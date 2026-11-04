@@ -18,6 +18,10 @@ response_from_geo.raise_for_status() # for the 4xx (bad requests) or 5xx errors(
 
 coordinates = response_from_geo.json()
 print(coordinates)
+longitude = coordinates["results"][0]["longitude"]
+latitude = coordinates["results"][0]["latitude"]
+print("The Longitude is ",longitude)
+print("The Latitude is ",latitude)
 # After I get the coordinates for the city I put them in for the next request 
 
 
