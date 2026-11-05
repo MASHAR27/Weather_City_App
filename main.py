@@ -35,7 +35,8 @@ weather_url = "https://api.open-meteo.com/v1/forecast"
 weather_para = {
     "latitude" :latitude,
     "longitude":longitude,
-    "hourly": "temperature_2m,relative_humidity_2m,wind_speed_10m" # I ask for temp at 2m ,Relative humidity at 2 metres, and wind speed at 10m
+    "hourly": "temperature_2m,relative_humidity_2m,wind_speed_10m", # I ask for temp at 2m ,Relative humidity at 2 metres, and wind speed at 10m
+    "current": "weather_code" # this will ensure that the response will have this weather code 
 }
 
 weath_response = requests.get(url=weather_url,params=weather_para,timeout=10)
@@ -47,6 +48,19 @@ if weath_response.status_code != 200:
     sys.exit()
     
 weath_response_data = weath_response.json()
+weather_descriptions = {
+    0: "Clear sky",
+    1: "Mainly clear",
+    2: "Partly cloudy",
+    3: "Overcast",
+    45: "Fog",
+    51: "Light drizzle",
+    61: "Slight rain",
+    71: "Slight snow",
+    95: "Thunderstorm"
+}
+weather_code = weath_response_data["current"]["weather_code"]
+print("The current weather is: ",weather_descriptions.get(weather_code,"Weather condition not known!"))
 print("The temeperatures,relative humidity and windspeed  in this city for each time is given below: ")
 for i in range(len(weath_response_data["hourly"]["time"])):
     print(weath_response_data["hourly"]["time"][i]," has temperature: " ,weath_response_data["hourly"]["temperature_2m"][i]," and relative humidity of ",weath_response_data["hourly"]["relative_humidity_2m"][i]," and wind speed of ",weath_response_data["hourly"]["wind_speed_10m"][i] )
