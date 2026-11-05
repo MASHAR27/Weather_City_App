@@ -11,10 +11,18 @@ param = {
     "format": "json",
     "language": "en"
 }
+try:
+    response_from_geo = requests.get(url=geo_url,params=param,timeout=10)
+    response_from_geo.raise_for_status() # for the 4xx (bad requests) or 5xx errors(server side problem)
+except requests.exceptions.Timeout:
+    print("The request took too long ")
+    
+except requests.exceptions.ConnectionError:
+    print("Couldn't connect to the server")
 
-response_from_geo = requests.get(url=geo_url,params=param,timeout=10)
+except requests.exceptions.HTTPError:
+    print("There was either a 4xx or 5xx error basically a bad request or a server side problem")
 
-response_from_geo.raise_for_status() # for the 4xx (bad requests) or 5xx errors(server side problem)
 
 coordinates = response_from_geo.json()
 
