@@ -35,7 +35,7 @@ weather_url = "https://api.open-meteo.com/v1/forecast"
 weather_para = {
     "latitude" :latitude,
     "longitude":longitude,
-    "hourly": "temperature_2m"
+    "hourly": "temperature_2m,relative_humidity_2m,wind_speed_10m" # I ask for temp at 2m ,Relative humidity at 2 metres, and wind speed at 10m
 }
 
 weath_response = requests.get(url=weather_url,params=weather_para,timeout=10)
@@ -47,8 +47,10 @@ if weath_response.status_code != 200:
     sys.exit()
     
 weath_response_data = weath_response.json()
-print("The temeperatures in this city for each time is given below: ")
+print("The temeperatures,relative humidity and windspeed  in this city for each time is given below: ")
 for i in range(len(weath_response_data["hourly"]["time"])):
-    print(weath_response_data["hourly"]["time"][i]," has temperature: " ,weath_response_data["hourly"]["temperature_2m"][i])
+    print(weath_response_data["hourly"]["time"][i]," has temperature: " ,weath_response_data["hourly"]["temperature_2m"][i]," and relative humidity of ",weath_response_data["hourly"]["relative_humidity_2m"][i]," and wind speed of ",weath_response_data["hourly"]["wind_speed_10m"][i] )
+    
+    
     
 
