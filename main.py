@@ -1,5 +1,7 @@
 import requests
 import sys
+import json
+from datetime import datetime
 
 city = input("Please enter the city whose weather details you want: ").strip()
 
@@ -98,6 +100,35 @@ weather_descriptions = {
 	99: "Thunderstorm with heavy hail"
 } # from the official Open-Meteo.com - the weather codes keys and their values 
 weather_code = weath_response_data["current"]["weather_code"]
+new_record ={
+	"city": city,
+    "latitude":latitude,
+    "longitude":longitude,
+    "weather" : weather_descriptions.get(weather_code, "Weather condition not known!"),
+    "weather_code" :	weather_code,
+    "search_time" : datetime.now().isoformat()
+}
+
+history_file = "weather_history.json"
+
+try:
+    with open(history_file,"r") as file:
+        existing = json.load(file)
+
+except FileNotFoundError:
+    existing = []
+
+except json.JSONDecodeError:
+    existing = []
+    
+existing.append(new_record)
+
+with open(history_file,"w") as new_file:
+    json.dump(existing,new_file)
+
+print("Weather history updated successfully!")
+
+
 print("The current weather is: ",weather_descriptions.get(weather_code,"Weather condition not known!"))
 print("The temeperatures,relative humidity and windspeed  in this city for each time is given below: ")
 for i in range(len(weath_response_data["hourly"]["time"])):
