@@ -1,21 +1,11 @@
-import requests
-import sys
 import json
 from datetime import datetime
-from functions import get_coordinates
+from functions import get_coordinates,get_weather
 
 city = input("Please enter the city whose weather details you want: ").strip()
 
-get_coordinates(city)
-weather_url = "https://api.open-meteo.com/v1/forecast"
-
-weather_para = {
-    "latitude" :latitude,
-    "longitude":longitude,
-    "hourly": "temperature_2m,relative_humidity_2m,wind_speed_10m", # I ask for temp at 2m ,Relative humidity at 2 metres, and wind speed at 10m
-    "current": "weather_code" # this will ensure that the response will have this weather code 
-}
-
+results = get_coordinates(city)
+get_weather(results["latitude"], results["longitude"])
 
 try:
     weath_response = requests.get(url=weather_url,params=weather_para,timeout=10)
