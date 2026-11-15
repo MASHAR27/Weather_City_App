@@ -2,46 +2,11 @@ import requests
 import sys
 import json
 from datetime import datetime
+from functions import get_coordinates
 
 city = input("Please enter the city whose weather details you want: ").strip()
 
-geo_url = "https://geocoding-api.open-meteo.com/v1/search"# the endpoint for the coordinates API/server
-
-param = {
-    "name" : city,
-    "count": 1,
-    "format": "json",
-    "language": "en"
-}
-try:
-    response_from_geo = requests.get(url=geo_url,params=param,timeout=10)
-    response_from_geo.raise_for_status() # for the 4xx (bad requests) or 5xx errors(server side problem)
-except requests.exceptions.Timeout:
-    print("The request took too long ")
-    sys.exit()
-except requests.exceptions.ConnectionError:
-    print("Couldn't connect to the server")
-    sys.exit()
-
-except requests.exceptions.HTTPError:
-    print("There was either a 4xx or 5xx error basically a bad request or a server side problem")
-    sys.exit()
-
-
-coordinates = response_from_geo.json()
-
-# After I get the coordinates for the city I put them in for the next request 
-if "results" not in coordinates:
-    print("City couldn't be found")
-    sys.exit()
-    
-longitude = coordinates["results"][0]["longitude"]
-latitude = coordinates["results"][0]["latitude"]
-print("The Longitude is ",longitude)
-print("The Latitude is ",latitude)
-
-
-
+get_coordinates(city)
 weather_url = "https://api.open-meteo.com/v1/forecast"
 
 weather_para = {
