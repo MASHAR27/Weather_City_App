@@ -57,15 +57,21 @@ def get_coordinates(city):
     else:
         coordinates = sent.json()
         if not coordinates.get("results"):
-             print("City couldn't be found")
-             return None
-        else:
-            longitude = coordinates["results"][0]["longitude"]
-            latitude = coordinates["results"][0]["latitude"]  
-            return {
-    "latitude": latitude,
-    "longitude": longitude
-}
+            print("City couldn't be found")
+            return None
+        location = coordinates["results"][0]
+        longitude = location.get("longitude")
+        latitude = location.get("latitude")
+
+        if latitude is None or longitude is None:
+            print("API response is missing latitude or longitude")
+            return None
+       
+        return {
+                "latitude": latitude,
+                "longitude": longitude
+            }
+    
 
 def get_weather(latitude, longitude):
     """Takes the coordinates of the previous call as argument and then sends a request to the endpoint of open-meteo for their weather details as a dictionary """
@@ -126,8 +132,11 @@ def save_history(record):
 def main():
     """Runs all the above functions smoothly"""
     while True:
-         city = input("Please enter the city whose weather details you want: ").strip().lower()
-         if city == "exit":
+         city = input("Please enter the city whose weather details you want: ").strip()
+         if not city:
+             print("Please enter a city name, it can't be empty!")
+             continue
+         if city.lower() == "exit":
              print("Exiting the program")
              break
          results = get_coordinates(city)
