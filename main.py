@@ -125,21 +125,21 @@ def save_history(record):
 
 def main():
     """Runs all the above functions smoothly"""
-    city = input("Please enter the city whose weather details you want: ").strip()
-
-    results = get_coordinates(city)
-    if results is None:
-        return
-
-    weather_info = get_weather(results["latitude"], results["longitude"])
-    if weather_info is None:
-        return
-
-    display_weather(weather_info)
-
-    weather_code = weather_info["current"]["weather_code"]
-
-    new_record = {
+    while True:
+         city = input("Please enter the city whose weather details you want: ").strip().lower()
+         if city == "exit":
+             print("Exiting the program")
+             break
+         results = get_coordinates(city)
+         if results is None:
+              continue
+         weather_info = get_weather(results["latitude"], results["longitude"])
+         if weather_info is None:
+              continue
+         display_weather(weather_info)
+         weather_code = weather_info["current"]["weather_code"]
+         
+         new_record = {
         "city": city,
         "latitude": results["latitude"],
         "longitude": results["longitude"],
@@ -150,13 +150,7 @@ def main():
         "weather_code": weather_code,
         "search_time": datetime.now().isoformat()
     }
-
-    save_history(new_record)
-    
-      
-    
-    
-        
+         save_history(new_record)
 
 
 if __name__ == "__main__":
